@@ -158,7 +158,8 @@ if (isset($_POST['action']) && $_POST['action'] === 'send') {
 // ==========================================
 // FRONTEND UI (HTML/CSS/JS)
 // ==========================================
-?>
+
+echo <<<'HTML'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -262,9 +263,11 @@ if (isset($_POST['action']) && $_POST['action'] === 'send') {
     </style>
 </head>
 <body>
+HTML;
 
-<?php if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true): ?>
-    <div class="auth-wrapper">
+if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    echo <<<'HTML'
+<div class="auth-wrapper">
         <div class="auth-box">
             <h1>Nexus Mailer Pro</h1>
             <div id="login_error" class="auth-error"></div>
@@ -293,9 +296,10 @@ if (isset($_POST['action']) && $_POST['action'] === 'send') {
                 });
         }
     </script>
-<?php else: ?>
-
-    <header class="app-header">
+HTML;
+} else {
+    echo <<<'HTML'
+<header class="app-header">
         <h1><span>Nexus</span> Mailer Pro</h1>
         <a href="?logout=1" class="logout-btn">Log Out</a>
     </header>
@@ -603,4 +607,5 @@ if (isset($_POST['action']) && $_POST['action'] === 'send') {
     </script>
 </body>
 </html>
-<?php endif; ?>
+HTML;
+}
