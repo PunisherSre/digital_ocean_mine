@@ -119,16 +119,22 @@ if (isset($_POST['action']) && $_POST['action'] === 'send') {
 
     if ($send_method === 'php') {
         // Use PHP mail() function
+        $fromEmail = filter_var($_POST['from_email'], FILTER_SANITIZE_EMAIL);
         $headers = "MIME-Version: 1.0\r\n";
         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-        $headers .= "From: =?UTF-8?B?".base64_encode($_POST['from_name'])."?= <".$_POST['from_email'].">\r\n";
+        $headers .= "From: =?UTF-8?B?".base64_encode($_POST['from_name'])."?= <".$fromEmail.">\r\n";
+        $headers .= "Reply-To: <".$fromEmail.">\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion();
 
-        $result = @mail($to, "=?UTF-8?B?".base64_encode($_POST['subject'])."?=", $_POST['body'], $headers);
+        $extraParam = !empty($fromEmail) ? "-f" . $fromEmail : null;
+        $result = @mail($to, "=?UTF-8?B?".base64_encode($_POST['subject'])."?=", $_POST['body'], $headers, $extraParam);
+        
         if ($result) {
             echo json_encode(['status' => 'success']);
         } else {
-            echo json_encode(['status' => 'error', 'msg' => 'PHP mail() failed on localhost']);
+            $lastErr = error_get_last();
+            $errMsg = $lastErr['message'] ?? 'PHP mail() failed on localhost: Windows has no local mailserver on port 25. Please use SMTP Server mode.';
+            echo json_encode(['status' => 'error', 'msg' => $errMsg]);
         }
         exit;
     }
