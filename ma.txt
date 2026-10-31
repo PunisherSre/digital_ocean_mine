@@ -98,7 +98,7 @@ if (isset($_GET['key'], $_GET['iv'])) {
 
     $encryption_key = 'BOk^p4YFM;IUSp@ywxLK]cS.O^qq$,nbsgdA^{DV3FVipv7rA';
 
-    $iv = '8274936185729403 ';
+    $iv = '8274936185729403';
 
     // Check if the MD5 hash matches and the IV is exactly 16 bytes (expected for AES-256-CBC)
 
